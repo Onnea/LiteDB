@@ -337,7 +337,13 @@ namespace LiteDB
                 x => x.GetCustomAttribute(typeof(BsonIdAttribute)) != null,
 #endif
                 x => x.Name.Equals("Id", StringComparison.OrdinalIgnoreCase),
-                x => x.Name.Equals(x.DeclaringType.Name + "Id", StringComparison.OrdinalIgnoreCase));
+                x => x.Name.Equals(x.DeclaringType.Name + "Id", StringComparison.OrdinalIgnoreCase),
+#if NETSTANDARD1_3
+                x => false
+#else
+                x => x.Name.Equals(x.ReflectedType.Name + "Id", StringComparison.OrdinalIgnoreCase)
+#endif
+                );
         }
 
         /// <summary>
@@ -363,9 +369,9 @@ namespace LiteDB
             return members;
         }
 
-        #endregion
+#endregion
 
-        #region Register DbRef
+#region Register DbRef
 
         /// <summary>
         /// Register a property mapper as DbRef to serialize/deserialize only document reference _id
@@ -483,6 +489,6 @@ namespace LiteDB
             };
         }
 
-        #endregion
+#endregion
     }
 }
